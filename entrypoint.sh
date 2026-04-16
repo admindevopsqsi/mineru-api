@@ -83,4 +83,4 @@ nginx
 
 # Start the internal MinerU API on port 8001
 echo "[*] Booting internal MinerU API..."
-exec mineru-api --host 127.0.0.1 --port 8001 --enable-vlm-preload
+exec mineru-api --host 127.0.0.1 --port 8001 --enable-vlm-preload true
