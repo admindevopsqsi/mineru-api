@@ -17,7 +17,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # Install mineru latest
-RUN python3 -m pip install -U 'mineru[core]>=3.0.0' --break-system-packages && \
+RUN python3 -m pip install -U 'mineru[core,vllm]>=3.0.0' --break-system-packages && \
     python3 -m pip cache purge
 
 WORKDIR /app
