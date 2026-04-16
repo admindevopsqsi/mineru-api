@@ -4,12 +4,14 @@
 FROM vllm/vllm-openai:v0.11.2
 
 # Install libgl for opencv support & Noto fonts for Chinese characters
+# Injected NGINX to fulfill RunPod Serverless `/ping` endpoint requirement
 RUN apt-get update && \
     apt-get install -y \
         fonts-noto-core \
         fonts-noto-cjk \
         fontconfig \
-        libgl1 && \
+        libgl1 \
+        nginx && \
     fc-cache -fv && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
@@ -24,10 +26,7 @@ WORKDIR /app
 COPY entrypoint.sh /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh
 
-# Expose the MinerU API port
 EXPOSE 8000
 
+# Fire the orchestrator script
 ENTRYPOINT ["/app/entrypoint.sh"]
-
-# Run the MinerU API server
-CMD ["mineru-api", "--host", "0.0.0.0", "--port", "8000"]
