@@ -20,6 +20,14 @@ RUN apt-get update && \
 RUN python3 -m pip install -U 'mineru[core,vllm]>=3.0.0' --break-system-packages && \
     python3 -m pip cache purge
 
+# Download models during build for baked-in availability
+ENV STORAGE_DIR="/models"
+ENV MINERU_TOOLS_CONFIG_JSON="/models/mineru.json"
+ENV MINERU_MODEL_SOURCE="local"
+ENV HOME="/models"
+
+RUN mkdir -p /models && mineru-models-download -s huggingface -m all
+
 WORKDIR /app
 
 # Copy setup entrypoint

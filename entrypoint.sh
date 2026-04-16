@@ -1,38 +1,11 @@
 #!/bin/bash
 set -e
 
-# Auto-detect RunPod persistent volume paths
-if [ -d "/workspace" ]; then
-    export STORAGE_DIR="/workspace"
-elif [ -d "/runpod-volume" ]; then
-    export STORAGE_DIR="/runpod-volume"
-else
-    export STORAGE_DIR="/models"
-    mkdir -p /models
-fi
-
-# Tell MinerU where the config should be
-export MINERU_TOOLS_CONFIG_JSON="$STORAGE_DIR/mineru.json"
+# Set configurations for pre-downloaded models from the Docker build stage
+export STORAGE_DIR="/models"
+export MINERU_TOOLS_CONFIG_JSON="${STORAGE_DIR}/mineru.json"
 export MINERU_MODEL_SOURCE="local"
-
-# Set HOME to persistent space
-export HOME="$STORAGE_DIR"
-
-if [ ! -f "$MINERU_TOOLS_CONFIG_JSON" ]; then
-    echo "================================================================"
-    echo "[!] mineru.json not found in $STORAGE_DIR."
-    echo "[!] Starting MinerU Models Download..."
-    echo "[!] This will take a while, but it will be saved to your network volume."
-    echo "================================================================"
-    
-    mineru-models-download -s huggingface -m all
-    
-    echo "================================================================"
-    echo "[*] Download complete!"
-    echo "================================================================"
-else
-    echo "[*] MinerU models configuration found in $STORAGE_DIR. Skipping download."
-fi
+export HOME="${STORAGE_DIR}"
 
 # ====================================================================
 # RUNPOD SERVERLESS COMPLIANCE: PORT & /ping HEALTHCHECK VIA NGINX
